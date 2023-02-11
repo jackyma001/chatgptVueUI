@@ -2,7 +2,6 @@
 import axios from 'axios';
 import marked from 'marked';
 </script>
-
 <template>
   <div>
     <div v-for="(item, index) in messages" :key="index">
@@ -13,40 +12,46 @@ import marked from 'marked';
       </div>
     </div>
     <div class="input-group mb-3">
-      <input v-model="inputValue" type="text" class="form-control" placeholder="Enter message"  @keyup.enter="submitData">
+      <input v-model="inputValue" type="text" class="form-control" placeholder="Enter message"
+        @keyup.enter="submitData">
     </div>
-      <div class="input-group-append">
-        <button @click="submitData" class="btn btn-primary">Submit</button>
-      </div>
+    <div class="input-group-append">
+      <button @click="submitData" class="btn btn-primary">Submit</button>
+    </div>
   </div>
 </template>
-
 <script>
+const API_URL = import.meta.env.API_URL || 'http://localhost:3000/conversation';
 export default {
   data() {
     return {
       inputValue: '',
       messages: [],
-      conversationId: ''
+      conversationId: '',
+      parentMessageId: ''
     };
   },
   methods: {
     async submitData() {
+      const input = this.inputValue;
+      this.inputValue ='';
       this.messages.push({
-        message: this.inputValue,
+        message: input,
         type: 'input'
       });
       try {
-        const res = await axios.post('http://localhost:3000/conversation', {
-          message: this.inputValue,
-          conversationId: this.conversationId 
-        }, 
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+        const res = await axios.post(API_URL, {
+          message: input,
+          conversationId: this.conversationId,
+          parentMessageId: this.parentMessageId
+        },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
         this.conversationId = res.data.conversationId;
+        this.parentMessageId = res.data.messageId;
         this.messages.push({
           message: JSON.stringify(res.data.response),
           type: 'response'
@@ -57,11 +62,9 @@ export default {
           type: 'response'
         });
       }
-      this.inputValue = '';
     },
     formatResponse(message) {
       return marked.parse(message).replace(/\\n/g,'<br>');
-      //return message.replace(/\n/g, '<br>');
     }
   }
 };
