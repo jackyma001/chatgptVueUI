@@ -30,6 +30,6 @@ jobs:
         USERNAME: ${{ secrets.USER }}
         PASSWORD: ${{ secrets.PWD }}
       with:
-        source: /frontend/build/
+        source: frontend/build/
         target: "/usr/share/nginx/html/dist"
         strip_components: 1
