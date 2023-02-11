@@ -1,0 +1,32 @@
+name: Deploy Node.js App
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SSH_PRIVATE_KEY: ${{ secrets.KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Package app with npm
+      run: |
+        curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+        npm ci
+        npm run build
+    - name: Copy files to server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{secrets.HOST}}
+        username: ${{secrets.USERNAME}}
+        key: ${{ secrets.KEY }}
+        source: dist/
+        target: /wechat-bot
+    
