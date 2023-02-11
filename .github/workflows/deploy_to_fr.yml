@@ -24,6 +24,6 @@ jobs:
         host: ${{secrets.HOST}}
         username: ${{secrets.USER}}
         password: ${{ secrets.PWD }}
-        source: dist/
+        source: /frontend/dist/
         target: /usr/share/nginx/html/dist
     
