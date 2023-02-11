@@ -24,7 +24,11 @@ jobs:
       run: npm run build
 
     - name: test
-      run: pwd | ls
+      run: pwd
+    - name: test2
+      run: cd frontend/dist
+    - name: test3
+      run: ls
       
     - name: Deploy Files
       uses: appleboy/scp-action@master
