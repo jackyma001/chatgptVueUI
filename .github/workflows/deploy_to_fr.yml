@@ -31,5 +31,5 @@ jobs:
         PASSWORD: ${{ secrets.PWD }}
       with:
         source: /home/runner/work/chatgptVueUI/chatgptVueUI/frontend/dist
-        target: /usr/share/nginx/html/dist
+        target: /
         strip_components: 1
